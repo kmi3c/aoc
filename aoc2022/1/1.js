@@ -44,12 +44,22 @@
 // Part 1
 const fs = require('fs')
 let input = fs.readFileSync('./input', { encoding: 'utf8' })
-input = "1000\n2000\n3000\n\n4000\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+//input = "1000#\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000\n"
 const max = Math.max(
-  ...input.split('\n\n').map((bag) => bag.split('\n').map((cal) => parseInt(cal)).reduce((a,c) => a + c))
+  ...input.trim().split('\n\n').map((bag) => bag.split('\n').map((cal) => parseInt(cal)).reduce((a,c) => a + c, 0))
 )
 console.log(`Part 1: ${max}`)
 //
 // --- Part Two ---
 //
-console.log("Part 2: TBD")
+// By the time you calculate the answer to the Elves' question, they've already realized that the Elf carrying the most Calories of food might eventually run out of snacks.
+//
+// To avoid this unacceptable situation, the Elves would instead like to know the total Calories carried by the top three Elves carrying the most Calories. That way, even if one of those Elves runs out of snacks, they still have two backups.
+//
+// In the example above, the top three Elves are the fourth Elf (with 24000 Calories), then the third Elf (with 11000 Calories), then the fifth Elf (with 10000 Calories). The sum of the Calories carried by these three elves is 45000.
+//
+// Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
+console.log("Part 2:",
+  input.trim().split('\n\n').map((bag) => bag.split('\n').map((cal) => parseInt(cal)).reduce((a,c) => a + c, 0))
+              .sort((a,b) => a - b).slice(-3).reduce((a,c) => a + c, 0)
+)
