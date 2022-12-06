@@ -51,9 +51,59 @@
 //
 const fs = require('fs')
 let input = fs.readFileSync('./input', { encoding: 'utf8' })
-input = "A Y\nB X\nC Z"
-console.log(`Part 1: TBD`)
+//input = "A Y\nB X\nC Z\n"
+const RPS = { 'A': 1, 'B': 2, 'C': 3 } // RockPaperScissors
+const scores = { 'X': 1, 'Y': 2, 'Z': 3, ...RPS }
+const wins = {
+  1: 3,  // Rock beats scissors
+  2: 1,  // Paper beats rock
+  3: 2   // Scissors beats paper
+}
+console.log('Part 1: ',
+input.trim().split('\n').map((moves) => moves.split(' ')).reduce((a, moves) => {
+  const [elf, santa] = moves
+  let win = 0
+  if (scores[santa] === scores[elf]) {
+    win = 3
+  } else if (wins[scores[santa]] === scores[elf]) {
+    win = 6
+  }
+  return  a + scores[santa] + win
+},0)
+)
 //
 // --- Part Two ---
 //
-console.log("Part 2: TBD")
+// The Elf finishes helping with the tent and sneaks back over to you. "Anyway, the second column says how the
+// round needs to end: X means you need to lose, Y means you need to end the round in a draw, and Z means you
+//  need to win. Good luck!"
+//
+// The total score is still calculated in the same way, but now you need to figure out what shape to choose so
+//  the round ends as indicated. The example above now goes like this:
+//
+//    In the first round, your opponent will choose Rock (A), and you need the round to end in a draw (Y),
+//    so you also choose Rock. This gives you a score of 1 + 3 = 4.
+
+//    In the second round, your opponent will choose Paper (B), and you choose Rock so you lose (X)
+//    with a score of 1 + 0 = 1.
+//    In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = 7.
+//
+// Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of 12.
+//
+// Following the Elf's instructions for the second column, what would your total score be if everything goes
+// exactly according to your strategy guide?
+console.log('Part 2: ',
+input.trim().split('\n').map((moves) => moves.split(' ')).reduce((a, moves) => {
+  const [elf, result] = moves
+  let santa = scores[elf] // Draw default
+  let win = 3 // Outcome
+  if(result === 'X'){
+    santa = wins[scores[elf]]
+    win = 0
+  } else if(result === 'Z'){
+    santa = wins[wins[scores[elf]]] // wins the winner ;)
+    win = 6
+  }
+  return  a + santa + win
+},0)
+)

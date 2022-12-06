@@ -1,4 +1,3 @@
-require 'pry'
 # https://adventofcode.com/2022/day/2
 #
 # --- Part One ---
@@ -51,11 +50,62 @@ require 'pry'
 # What would your total score be if everything goes exactly according to your strategy guide?
 #
 input = File.open('input', 'rb').read
-input = "A Y\nB X\nC Z"
-# Split to bags, split bags to calories, calories to ints, sum bags and get maximum value.
-puts "Part 1: TBD"
+#input = "A Y\nB X\nC Z\n"
+RPS = { 'A' => 1, 'B' => 2, 'C' => 3 } # RockPaperScissors
+scores = { 'X' => 1, 'Y' => 2, 'Z' => 3 }.merge(RPS)
+wins = {
+  '1' => 3,  # Rock beats scissors
+  '2' => 1,  # Paper beats rock
+  '3' => 2   # Scissors beats paper
+}
+puts "Part 1: #{
+  input.split("\n").map{|moves|  moves.split(' ')}
+    .reduce(0){|score, moves|
+    elf, santa =  moves
+    win = 0
+    if (scores[santa] === scores[elf])
+      win = 3
+    elsif (wins[scores[santa].to_s] === scores[elf])
+      win = 6
+    end
+    #puts [elf, santa, scores[santa], win].to_s
+    score + scores[santa] + win
+  }
+}"
 #
 # --- Part Two ---
 #
+# The Elf finishes helping with the tent and sneaks back over to you. "Anyway, the second column says how the
+# round needs to end: X means you need to lose, Y means you need to end the round in a draw, and Z means you
+#  need to win. Good luck!"
 #
-puts "Part 2: TBD"
+# The total score is still calculated in the same way, but now you need to figure out what shape to choose so
+#  the round ends as indicated. The example above now goes like this:
+#
+#    In the first round, your opponent will choose Rock (A), and you need the round to end in a draw (Y),
+#    so you also choose Rock. This gives you a score of 1 + 3 = 4.
+#
+#    In the second round, your opponent will choose Paper (B), and you choose Rock so you lose (X)
+#    with a score of 1 + 0 = 1.
+#    In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = 7.
+#
+# Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of 12.
+#
+# Following the Elf's instructions for the second column, what would your total score be if everything goes
+# exactly according to your strategy guide?
+puts "Part 2: #{
+  input.split("\n").map{|moves|  moves.split(' ')}
+    .reduce(0){|score, moves|
+    elf, result =  moves
+    santa = scores[elf] # Draw default
+    win = 3 # Outcome
+    if result === 'X'
+      santa = wins[scores[elf].to_s]
+      win = 0
+    elsif result === 'Z'
+      win = 6
+      santa = wins[wins[scores[elf].to_s].to_s] # wins the winner ;)
+    end
+    score + santa + win
+  }
+}"
