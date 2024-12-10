@@ -83,11 +83,29 @@ puts "Part 1: #{sum_mul(@input)}"
 # multiplications?
 
 def filter_dos_and_donts(input)
-  input.gsub(/don't\(\).+do\(\)/,'')
+  dad = []
+  input.scan(/mul\((\d+),(\d+)\)|(do)\(\)|(don)'t\(\)/) do |a,b,d,dn|
+    dad.push(d) if d
+    dad.push(dn) if dn
+    next if a.nil? && b.nil?
+
+    dad.push([a.to_i, b.to_i]) if a && b
+  end
+  active = true
+  dad.map do |moi| # mul or instruction
+    if moi == 'don'
+     active = false
+     next
+    elsif moi == 'do'
+     active = true
+     next
+    end
+    active ? moi : next
+  end.compact
 end
 
 def sum_mul_with_dos_and_donts(input)
-  sum_mul(filter_dos_and_donts(input))
+  filter_dos_and_donts(input).map{|m| m.reduce(&:*)}.sum
 end
 
 test2 = sum_mul_with_dos_and_donts(@test)
